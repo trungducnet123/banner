@@ -65,7 +65,7 @@ const randomize = () => {
 randomize();
 const download = () => {
   html2canvas(capture, {
-    scale: 1.5,
+    scale: 1,
     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--bg-color")
   }).then((canvas) => {
     saveAs(canvas.toDataURL(), "banner.png");
