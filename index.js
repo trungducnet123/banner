@@ -75,6 +75,11 @@ const download = () => {
     scale: 1,
     backgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--bg-color"),
   }).then((canvas) => {
+    const maxWidth = 800; // Chiều rộng tối đa
+    const quality = 0.8; // Chất lượng ảnh (từ 0 đến 1)
+    let outputCanvas = canvas;
+
+    // Kiểm tra và điều chỉnh kích thước
     if (canvas.width > maxWidth) {
       const scaleFactor = maxWidth / canvas.width;
       const newCanvas = document.createElement("canvas");
@@ -82,12 +87,14 @@ const download = () => {
       newCanvas.height = canvas.height * scaleFactor;
       const ctx = newCanvas.getContext("2d");
       ctx.drawImage(canvas, 0, 0, newCanvas.width, newCanvas.height);
-      saveAs(newCanvas.toDataURL(), "banner.png");
-    } else {
-      saveAs(canvas.toDataURL(), "banner.png");
+      outputCanvas = newCanvas; // Sử dụng canvas mới
     }
+
+    // Lưu ảnh với định dạng JPEG và chất lượng giảm
+    saveAs(outputCanvas.toDataURL("image/jpeg", quality), "banner.jpg");
   });
 };
+
 const saveAs = (uri, filename) => {
   const link = document.createElement("a");
   if (typeof link.download === "string") {
