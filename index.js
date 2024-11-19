@@ -63,12 +63,29 @@ const randomize = () => {
   );
 };
 randomize();
+
+let maxWidth = 800; // Giá trị mặc định
+
+const updateMaxWidth = ({ value }) => {
+  maxWidth = parseInt(value, 10); // Cập nhật giá trị maxWidth từ input
+};
+
 const download = () => {
   html2canvas(capture, {
     scale: 1,
-    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--bg-color")
+    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue("--bg-color"),
   }).then((canvas) => {
-    saveAs(canvas.toDataURL(), "banner.png");
+    if (canvas.width > maxWidth) {
+      const scaleFactor = maxWidth / canvas.width;
+      const newCanvas = document.createElement("canvas");
+      newCanvas.width = maxWidth;
+      newCanvas.height = canvas.height * scaleFactor;
+      const ctx = newCanvas.getContext("2d");
+      ctx.drawImage(canvas, 0, 0, newCanvas.width, newCanvas.height);
+      saveAs(newCanvas.toDataURL(), "banner.png");
+    } else {
+      saveAs(canvas.toDataURL(), "banner.png");
+    }
   });
 };
 const saveAs = (uri, filename) => {
